@@ -1,0 +1,21 @@
+
+font.size : 20
+
+figure.figsize: 7.0, 7.0
+
+xtick.major.size : 7
+xtick.major.width : 2
+xtick.top : True
+xtick.bottom: True
+xtick.direction: in
+xtick.minor.visible: True
+xtick.minor.size : 5
+
+ytick.major.size : 7
+ytick.major.width : 2
+ytick.direction: in
+ytick.left: True
+ytick.right: True
+ytick.minor.visible: True
+ytick.minor.size : 5
+
