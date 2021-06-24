@@ -20,6 +20,13 @@ Uses Data class for basic data manegment using numpy
 class SpatialScan(Data):
 
     def __init__(self, filepath=None, label=""):
+        '''
+        Parameters
+        --------------
+        filepath: String. Path to the .dat file to be opened (includes .dat)
+        label: String. A name for this object if working with a lot of them
+        '''
+        plt.style.use('plotstyle.mplstyle')
         self.filename = filepath
         if self.filename != None:
             self.spatialRead()
@@ -27,6 +34,7 @@ class SpatialScan(Data):
         self.label = label
 
     def spatialRead(self):
+        '''Reads in the data using np.genfromtxt()'''
         try:
             self.data = np.genfromtxt(self.filename, float)
             self.headers = ['x', 'y', 'dR/R', 'R']
@@ -36,6 +44,7 @@ class SpatialScan(Data):
             return
 
     def findDimentions(self):
+        '''Figures out how many cols and rows their are'''
         row=1
         while self.data[row, 1] == self.data[0,1]:
             row += 1
@@ -44,7 +53,11 @@ class SpatialScan(Data):
 
         return (row, col)
 
+    def shape(self):
+        return (self.row, self.col)
+
     def visualize(self, ax=None, cmap=palettable.scientific.sequential.Imola_20.mpl_colormap):
+        '''Creates a heat map of the signal, returns the Axes object'''
         if ax == None:
             fig, ax = plt.subplots()
 
