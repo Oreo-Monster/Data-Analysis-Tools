@@ -7,7 +7,7 @@ __pycache__/
 D*/
 randdata/
 outputs/*
-
+!outputs/
 
 #Include the example files
 !example/
