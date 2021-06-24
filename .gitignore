@@ -1,0 +1,15 @@
+#Data Files
+**/*.dat
+**/*.docx
+**/*ipynb
+__pycache__/
+.ipynb_checkpoints/
+D*/
+randdata/
+outputs/*
+
+
+#Include the example files
+!example/
+!example.ipynb
+
