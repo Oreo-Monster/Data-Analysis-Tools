@@ -64,8 +64,8 @@ class SpatialScan(Data):
         ax.set_xlabel('X (um)')
         ax.set_ylabel('Y (um)')
 
-        im = self.data[:, 2].copy().reshape((self.row, self.col))
-        for i in np.arange(self.row, step=2):
+        im = self.data[:, 2].copy().reshape((self.col, self.row))
+        for i in np.arange(self.col, step=2):
             im[i,:] = np.flip(im[i,:])
         im = np.flip(im)
         bounds = (self.data[0,0], self.data[self.row,0],self.data[0,1], self.data[-1,1])

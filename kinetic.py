@@ -46,6 +46,19 @@ class KineticScan(Data):
             print(f'Could not read file: {self.filename}, please check file path')
             return
 
+    def multiScan(self, objs):
+        '''
+        This method will average out multiple scans and update
+        this objects data
+        Parameters:
+        -------------------------
+        objs: list/array. collection of KineticScan objects to be averaged into this one 
+        '''
+        for o in objs:
+            self.data[:,2] += o.data[:,2]
+        self.data /= len(objs)+1
+        return
+
     def visualize(self, ax=None):
         '''Visualizes the data given and returns the axes'''
         plt.style.use('plotstyle.mplstyle')
@@ -83,7 +96,8 @@ class KineticScan(Data):
         x = x[x0idx:]
         y = y[x0idx:]
         #Using Scipy to fit the curve
-        p,_ = optimize.curve_fit(self.dbexp, x,y)
+        p,covar = optimize.curve_fit(self.dbexp, x,y)
+        self.var=np.sqrt(np.diagonal(covar))
         #Storing the params to be used for vis
         self.params = p
         return p
@@ -161,10 +175,16 @@ class KineticScan(Data):
 
         if len(params) == 5:
             func = self.dbexp
-            pstring = [f'y0 = {params[0]:.2f}',f'A1 = {params[1]:.2f}', f'A2 = {params[2]:.2f}', fr'$\tau$1 = {params[3]:.2f}', fr'$\tau$2 = {params[4]:.2f}']
+            pstring = [fr'y0 = {params[0]:.2f}$\pm${self.var[0]:.2f}',
+                        fr'A1 = {params[1]:.2f}$\pm${self.var[1]:.2f}', 
+                        fr'A2 = {params[2]:.2f}$\pm${self.var[2]:.2f}', 
+                        fr'$\tau$1 = {params[3]:.2f}$\pm${self.var[3]:.2f}', 
+                        fr'$\tau$2 = {params[4]:.2f}$\pm${self.var[4]:.2f}']
         elif len(params) == 3:
             func = self.sgexp
-            pstring = [f'y0 = {params[0]:.2f}',f'A1 = {params[1]:.2f}', fr'$\tau$1 = {params[2]:.2f}']
+            pstring = [fr'y0 = {params[0]:.2f}$\pm${self.var[0]:.2f}'
+                      ,fr'A1 = {params[1]:.2f}$\pm${self.var[1]:.2f}'
+                      ,fr'$\tau$1 = {params[2]:.2f}$\pm${self.var[2]:.2f}']
 
         #Getting the x data
         x = data[:,0]
@@ -265,7 +285,7 @@ class KineticScan(Data):
         #Loops through string list and writes each one with the correct offset
         for i, str in enumerate(pstring):
             #Makes two columns
-            x = 0.05 + 0.5*(i%2)
+            x = 0.02 + 0.5*(i%2)
             y = startPos-int(i/2)*0.06
-            self.legend.text(x, y, str, fontsize=12, color=color)
+            self.legend.text(x, y, str, fontsize=9, color=color)
             
