@@ -32,6 +32,7 @@ class SpatialScan(Data):
             self.spatialRead()
             self.row, self.col = self.findDimentions()
         self.label = label
+        self.findDimentions()
 
     def spatialRead(self):
         '''Reads in the data using np.genfromtxt()'''
@@ -56,6 +57,25 @@ class SpatialScan(Data):
     def shape(self):
         return (self.row, self.col)
 
+    def minMax(self):
+        xmin, xmax, ymin, ymax = (self.data[0,0], self.data[self.row,0],self.data[0,1], self.data[-1,1])
+        return (xmin,xmax,ymin,ymax)
+
+    def makeIM(self):
+        '''Creates the image for a heat mape using dR/R, accounts for raster pattern'''
+        im = self.data[:, 2].copy().reshape((self.row, self.col))
+        for i in np.arange(self.row, step=2):
+            im[i,:] = np.flip(im[i,:])
+        im = np.flip(im)
+        return im
+
+    def xyIM(self):
+        im = self.data.copy().reshape((self.row, self.col, 3))
+        for i in np.arange(self.row, step=2):
+            im[i,:,:] = np.flip(im[i,:,:])
+        im = np.flip(im)
+        return im
+
     def visualize(self, ax=None, cmap=palettable.scientific.sequential.Imola_20.mpl_colormap):
         '''Creates a heat map of the signal, returns the Axes object'''
         if ax == None:
@@ -68,7 +88,7 @@ class SpatialScan(Data):
         for i in np.arange(self.col, step=2):
             im[i,:] = np.flip(im[i,:])
         im = np.flip(im)
-        bounds = (self.data[0,0], self.data[self.row,0],self.data[0,1], self.data[-1,1])
+        bounds = self.minMax()
         ax.imshow(im, cmap=cmap, extent=bounds)
 
         return ax

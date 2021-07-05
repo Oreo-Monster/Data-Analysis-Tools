@@ -8,6 +8,7 @@ D*/
 randdata/
 outputs/*
 !outputs/
+testbench.py
 
 #Include the example files
 !example/
